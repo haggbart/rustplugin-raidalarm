@@ -60,7 +60,7 @@ namespace Oxide.Plugins
                 [AlarmLoc.BODY] = "{0} destroyed at {1}",
                 [AlarmLoc.HELP] = "To receive Raid Alarm notifications, " +
                                    "you need the official Rust+ companion app on your mobile device and pair it this server. " +
-                                   "To do this, press Esc and click \"Rust+\" in main menu.\n\n " +
+                                   "To do this, press Esc and click \"Rust+\" in main menu.\n\n" +
                                    "Use /raidalarm test to test your alarm. To do disable, use /raidalarm disable",
                 [AlarmLoc.HELP_COMMANDS] = "Available commands: \n/raidalarm status|enable|disable|test",
                 [AlarmLoc.STATUS_ENABLED] = "Raid Alarm is enabled.",
@@ -86,6 +86,7 @@ namespace Oxide.Plugins
             var victims = new List<ulong>(buildingPrivilege.authorizedPlayers.Count);
             foreach (PlayerNameID victim in buildingPrivilege.authorizedPlayers)
             {
+                if (victim.userid == info.InitiatorPlayer.userID) return;
                 if (disabled.Contains(victim.userid)) continue;
                 victims.Add(victim.userid);
             }
@@ -104,8 +105,7 @@ namespace Oxide.Plugins
             
             return ((BuildingBlock)entity).grade != BuildingGrade.Enum.Twigs;
         }
-        
-        
+
         private static string GetGrid(Vector3 pos)
         {
             const float scale = 150f;
@@ -116,8 +116,7 @@ namespace Oxide.Plugins
             int lon = (int)(World.Size/scale - z/scale);
             return latChar + lon.ToString();
         }
-        
-        
+
         [ChatCommand("raidalarm")]
         private void ChatRaidAlarm(BasePlayer player, string command, string[] args)
         {
@@ -150,8 +149,8 @@ namespace Oxide.Plugins
                     NotificationList.SendNotificationTo(player.userID, NotificationChannel.SmartAlarm,
                         lang.GetMessage(AlarmLoc.TITLE, this, player.UserIDString),
                         string.Format(lang.GetMessage(AlarmLoc.BODY, this, player.UserIDString), 
-                            string.Format(lang.GetMessage(AlarmLoc.TEST_DESTROYED, this, player.UserIDString)), GetGrid(player.transform.position)), 
-                        Util.GetServerPairingData());
+                            string.Format(lang.GetMessage(AlarmLoc.TEST_DESTROYED, this, player.UserIDString)), 
+                            GetGrid(player.transform.position)), Util.GetServerPairingData());
                     SendReply(player, lang.GetMessage(AlarmLoc.TEST_SENT, this, player.UserIDString));
                     break;
                 default:
