@@ -2,8 +2,7 @@ Receive raid notifications through the official Rust companion mobile app and ne
 
 ## Usage
 
-Make sure you're paired with the server to receive notifications. 
-Raid alarm is enabled by default, but can be disabled per user with /raidalarm disable
+Raid alarm is enabled by default, but can be disabled per user with /raidalarm disable. Make sure you're paired with the server to receive notifications.  
 
 ### User commands
 **/raidalarm**  - display some help information
