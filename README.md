@@ -1,4 +1,4 @@
-Receive raid notifications through the official Rust companion mobile app and never get offlined agained!
+Receive raid notifications through the official Rust companion mobile app and never get offlined again!
 
 ## Usage
 
@@ -7,8 +7,11 @@ Raid alarm is enabled by default, but can be disabled per user with /raidalarm d
 
 ### User commands
 **/raidalarm**  - display some help information
+
 **/raidalarm test** -  send a test raid alarm notification 
+
 **/raidalarm status** 
+
 **/raidalarm enable/disable**
 
 
