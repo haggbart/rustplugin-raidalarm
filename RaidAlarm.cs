@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Oxide.Plugins
 {
     
-    [Info("RaidAlarm", "haggbart", "0.1.1")]
+    [Info("Raid Alarm", "haggbart", "0.1.3")]
     [Description("Receive raid notifications through the official Rust companion mobile app")]
     internal class RaidAlarm : RustPlugin
     {
@@ -17,10 +17,10 @@ namespace Oxide.Plugins
         private static HashSet<ulong> disabled = new HashSet<ulong>();
         
         private void SaveData() =>
-            Interface.Oxide.DataFileSystem.WriteObject(Title, disabled);
+            Interface.Oxide.DataFileSystem.WriteObject(Name, disabled);
 
         private void ReadData() =>
-            disabled = Interface.Oxide.DataFileSystem.ReadObject<HashSet<ulong>>(Title);
+            disabled = Interface.Oxide.DataFileSystem.ReadObject<HashSet<ulong>>(Name);
 
         
         private void Init() => ReadData();
@@ -126,7 +126,7 @@ namespace Oxide.Plugins
                 return;
             }
 
-            switch (args[0])
+            switch (args[0].ToLower())
             {
                 case "status":
                     SendReply(player, GetStatusText(player));
