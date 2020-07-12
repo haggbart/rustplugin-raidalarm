@@ -2,17 +2,15 @@ Receive raid notifications through the official Rust companion mobile app and ne
 
 ## Usage
 
-Raid alarm is enabled by default, but can be disabled per user with /raidalarm disable. Make sure you're paired with the server to receive notifications.  
+Make sure you're paired with the server to receive notifications.
 
-### User commands
-**/raidalarm**  - display some help information
+Raid alarm is enabled by default, but can be disabled per user with `/raidalarm disable`.
 
-**/raidalarm test** -  send a test raid alarm notification 
+## Chat Commands
 
-**/raidalarm status** 
-
-**/raidalarm enable/disable**
-
-
+* `/raidalarm` - Display some help information
+* `/raidalarm test` -  Send a test raid alarm notification 
+* `/raidalarm status` - Get the status of the raid alarm
+* `/raidalarm enable/disable` - Enable/disable the raiad alarm
 
 ## Localization
