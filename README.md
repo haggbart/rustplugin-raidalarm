@@ -17,5 +17,10 @@ Raid alarm is enabled by default, but can be disabled per user with `/raidalarm 
  `raidalarm.use` - Permissions needs to be enabled in the config
  
 ## Configuration
+```json
+{
+  "usePermissions": false
+}
+```
 
 ## Localization
