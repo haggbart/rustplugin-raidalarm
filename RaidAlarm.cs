@@ -8,13 +8,15 @@ using UnityEngine;
 namespace Oxide.Plugins
 {
     
-    [Info("Raid Alarm", "haggbart", "0.1.3")]
+    [Info("Raid Alarm", "haggbart", "0.2.0")]
     [Description("Receive raid notifications through the official Rust companion mobile app")]
     internal class RaidAlarm : RustPlugin
     {
         #region init, data and cleanup
         
         private static HashSet<ulong> disabled = new HashSet<ulong>();
+
+        private const string PERMISSION = "raidalarm.use";
         
         private void SaveData() =>
             Interface.Oxide.DataFileSystem.WriteObject(Name, disabled);
@@ -23,13 +25,42 @@ namespace Oxide.Plugins
             disabled = Interface.Oxide.DataFileSystem.ReadObject<HashSet<ulong>>(Name);
 
         
-        private void Init() => ReadData();
-        
+        private void Init()
+        {
+            config = Config.ReadObject<PluginConfig>();
+            SaveConfig();
+            permission.RegisterPermission(PERMISSION, this);
+            ReadData();
+        }
+
         private void OnServerSave() => SaveData();
         
         private void Unload() => SaveData();
 
         #endregion
+        
+        
+        #region config
+        
+        private PluginConfig config;
+
+        private class PluginConfig
+        {
+            public bool usePermissions;
+        }
+        
+        protected override void LoadDefaultConfig() => Config.WriteObject(GetDefaultConfig(), true);
+        private new void SaveConfig() => Config.WriteObject(config, true);
+        
+        private static PluginConfig GetDefaultConfig()
+        {
+            return new PluginConfig
+            {
+                usePermissions = false
+            };
+        }
+
+        #endregion config
         
 
         #region localization
@@ -44,6 +75,7 @@ namespace Oxide.Plugins
             public const string STATUS_DISABLED = "AlarmStatusDisabled";
             public const string TEST_SENT = "AlarmTestSent";
             public const string TEST_DESTROYED = "AlarmTestDestroyedItem";
+            public const string NO_PERMISSION = "NoPermission";
         }
 
         private string GetStatusText(BasePlayer player)
@@ -66,13 +98,14 @@ namespace Oxide.Plugins
                 [AlarmLoc.STATUS_ENABLED] = "Raid Alarm is enabled.",
                 [AlarmLoc.STATUS_DISABLED] = "Raid Alarm is disabled.",
                 [AlarmLoc.TEST_SENT] = "Test notification sent. If you don't receive it, make sure you're paired with the server.",
-                [AlarmLoc.TEST_DESTROYED] = "chair"
+                [AlarmLoc.TEST_DESTROYED] = "chair",
+                [AlarmLoc.NO_PERMISSION] = "You don't have the permission to use this command."
             }, this);
         }
 
         #endregion
         
-        
+
         private void OnEntityDeath(BaseCombatEntity entity, HitInfo info)
         {
             if (info == null) return;
@@ -86,6 +119,7 @@ namespace Oxide.Plugins
             var victims = new List<ulong>(buildingPrivilege.authorizedPlayers.Count);
             foreach (PlayerNameID victim in buildingPrivilege.authorizedPlayers)
             {
+                if (config.usePermissions && !permission.UserHasPermission(victim.userid.ToString(), PERMISSION)) return;
                 if (victim.userid == info.InitiatorPlayer.userID) return;
                 if (disabled.Contains(victim.userid)) continue;
                 victims.Add(victim.userid);
@@ -120,6 +154,11 @@ namespace Oxide.Plugins
         [ChatCommand("raidalarm")]
         private void ChatRaidAlarm(BasePlayer player, string command, string[] args)
         {
+            if (config.usePermissions && !permission.UserHasPermission(player.UserIDString, PERMISSION))
+            {
+                SendReply(player, lang.GetMessage(AlarmLoc.NO_PERMISSION, this, player.UserIDString));
+                return;
+            }
             if (args.Length == 0)
             {
                 SendReply(player, lang.GetMessage(AlarmLoc.HELP, this, player.UserIDString));
