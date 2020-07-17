@@ -1,5 +1,7 @@
 Receive raid notifications through the official Rust companion mobile app and never get offlined again!
 
+Everyone who's on the TC list of authorized players will receive a notification when someone else (who's not on the list) destroy a wall, door etc.
+
 ## Usage
 
 Make sure you're paired with the server to receive notifications.
