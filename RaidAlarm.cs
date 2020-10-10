@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using CompanionServer;
 using Oxide.Core;
 using ProtoBuf;
@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Oxide.Plugins
 {
     
-    [Info("Raid Alarm", "haggbart", "0.2.0")]
+    [Info("Raid Alarm", "haggbart", "0.2.1")]
     [Description("Receive raid notifications through the official Rust companion mobile app")]
     internal class RaidAlarm : RustPlugin
     {
@@ -119,6 +119,7 @@ namespace Oxide.Plugins
             var victims = new List<ulong>(buildingPrivilege.authorizedPlayers.Count);
             foreach (PlayerNameID victim in buildingPrivilege.authorizedPlayers)
             {
+                if (victim == null) continue;
                 if (config.usePermissions && !permission.UserHasPermission(victim.userid.ToString(), PERMISSION)) return;
                 if (victim.userid == info.InitiatorPlayer.userID) return;
                 if (disabled.Contains(victim.userid)) continue;
@@ -198,4 +199,4 @@ namespace Oxide.Plugins
             }
         }
     }
-}    
+}
