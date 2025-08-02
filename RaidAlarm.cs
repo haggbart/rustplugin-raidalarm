@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("Raid Alarm", "haggbart", "0.4.0")]
+    [Info("Raid Alarm", "haggbart", "0.4.1")]
     [Description("Receive raid notifications through the official Rust companion mobile app")]
     internal class RaidAlarm : RustPlugin
     {
@@ -134,7 +134,7 @@ namespace Oxide.Plugins
             raidblocked[grid] = lastAttack;
 
             NotificationList.SendNotificationTo(victims, NotificationChannel.SmartAlarm, lang.GetMessage(Loc.TITLE, this),
-                string.Format(lang.GetMessage(Loc.BODY, this), entity.ShortPrefabName, grid), Util.GetServerPairingData());
+                string.Format(lang.GetMessage(Loc.BODY, this), entity.ShortPrefabName, grid), Util.TryGetServerPairingData());
         }
 
         private static bool IsRaidEntity(BaseCombatEntity entity)
@@ -196,7 +196,7 @@ namespace Oxide.Plugins
                         lang.GetMessage(Loc.TITLE, this, player.UserIDString),
                         string.Format(lang.GetMessage(Loc.BODY, this, player.UserIDString),
                             string.Format(lang.GetMessage(Loc.TEST_DESTROYED, this, player.UserIDString)),
-                            GetGrid(player.transform.position)), Util.GetServerPairingData());
+                            GetGrid(player.transform.position)), Util.TryGetServerPairingData());
                     SendReply(player, lang.GetMessage(Loc.TEST_SENT, this, player.UserIDString));
                     break;
                 default:
